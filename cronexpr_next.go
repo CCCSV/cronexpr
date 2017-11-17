@@ -270,6 +270,12 @@ func (expr *Expression) nextTime(prev, next time.Time) time.Time {
 	if offsetDiff < 0 {
 		twinT := findTwinTime(prev)
 
+		//make sure twinT is actually between 1pm to 2pm
+		twinT = twinT.In(prev.Location())
+		if twinT.Hour() != 1 {
+			twinT = time.Time{}
+		}
+
 		if !twinT.IsZero() {
 			if dstFlags&DSTFallFireLate != 0 {
 				return twinT
